@@ -2,10 +2,13 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan') // Logger
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 
 const productRoutes = require("./api/routes/products")
 const orderRoutes = require("./api/routes/orders")
 
+mongoose.connect('mongodb+srv://admin:' + process.env.MONGO_ATLAS_PW + '@cluster0.nuy52.mongodb.net/?retryWrites=true&w=majority')
+mongoose.Promise = global.Promise;
 // middlewares
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended: false })) // extended : true => supporst extended bodies with rich data
