@@ -139,6 +139,10 @@ router.delete('/:productId', (req, res, next) => {
                 res.status(200).json({
                     message: "Product deleted"
                 })
+            } else {
+                res.status(500).json({
+                    error: "Product could not be deleted"
+                })
             }
 
         })
