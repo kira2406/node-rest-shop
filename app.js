@@ -11,6 +11,7 @@ mongoose.connect('mongodb+srv://admin:' + process.env.MONGO_ATLAS_PW + '@cluster
 mongoose.Promise = global.Promise;
 // middlewares
 app.use(morgan('dev'))
+app.use('/uploads', express.static('uploads')) // making uploads folder public as a static
 app.use(bodyParser.urlencoded({ extended: false })) // extended : true => supporst extended bodies with rich data
 app.use(bodyParser.json())
 
