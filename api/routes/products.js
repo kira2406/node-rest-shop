@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose')
 const multer = require('multer')
 
+const checkAuth = require('../middleware/check-auth')
 // defining the filename and the destination for file upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -12,6 +13,7 @@ const storage = multer.diskStorage({
     }
 })
 
+// Filter to filter only certain type of files
 const fileFilter = (req, file, cb) => {
     // reject a file
     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
@@ -23,6 +25,7 @@ const fileFilter = (req, file, cb) => {
 
 }
 
+// passing the uploaded file to multer which parses it
 const upload = multer({
     storage: storage,
     limits: {
@@ -67,10 +70,10 @@ router.get('/', (req, res, next) => {
 });
 
 // parsing the uploaded file by passing the request through a middleware
-router.post('/', upload.single('productImage'), (req, res, next) => {
+router.post('/', checkAuth, upload.single('productImage'), (req, res, next) => {
     console.log(req.file)
     const product = new Product({
-        _id: mongoose.Types.ObjectId(),
+        _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         price: req.body.price,
         productImage: req.file.path
@@ -130,7 +133,7 @@ router.get('/:productId', (req, res, next) => {
         })
 })
 
-router.patch('/:productId', (req, res, next) => {
+router.patch('/:productId', checkAuth, (req, res, next) => {
     const id = req.params.productId;
     const updateOps = {}
     for (const ops of req.body) {
@@ -164,7 +167,7 @@ router.patch('/:productId', (req, res, next) => {
         })
 })
 
-router.delete('/:productId', (req, res, next) => {
+router.delete('/:productId', checkAuth, (req, res, next) => {
     const id = req.params.productId
     Product.remove({ _id: id })
         .exec()
